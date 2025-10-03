@@ -2,6 +2,10 @@ package Java;
 
 import javax.swing.*;
 
+// In Java the upper left corner is X = 0, Y = 0
+// X increases to the right
+// Y increases as it goes down
+
 public class Game {
     public static void main(String[] args) {
         JFrame frame = new JFrame("2D Adventure");
@@ -15,5 +19,7 @@ public class Game {
 
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
+
+        gamePanel.startGameThread();
     }
 }
