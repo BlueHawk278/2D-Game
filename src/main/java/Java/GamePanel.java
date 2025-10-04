@@ -1,5 +1,7 @@
 package Java;
 
+import Java.Entity.Player;
+
 import javax.swing.*;
 import java.awt.*;
                                       // Allows us to use threading
@@ -8,7 +10,7 @@ public class GamePanel extends JPanel implements Runnable{
     // Screen Settings
     final int originalTileSize = 16; //16x16 tile
     final int scale = 3;
-    final int tileSize = originalTileSize * scale; // 48x48 - Actual tile size displayed on screen
+    public final int tileSize = originalTileSize * scale; // 48x48 - Actual tile size displayed on screen
     final int maxScreenColumn = 16;
     final int maxScreenRow = 12;
     final int screenWidth = tileSize * maxScreenColumn; // 768 pixels - 16 * 48
@@ -18,11 +20,12 @@ public class GamePanel extends JPanel implements Runnable{
 
     KeyHandler keyHandler = new KeyHandler();
     Thread gameThread;
+    Player player = new Player(this, keyHandler);
 
     // Set player's default position
     int playerX = 100;
     int playerY = 100;
-    int playerSpeed = 10;
+    int playerSpeed = 4;
 
     public GamePanel() {
         this.setPreferredSize(new Dimension(screenWidth, screenHeight));
@@ -42,7 +45,7 @@ public class GamePanel extends JPanel implements Runnable{
         double drawInterval = (double) 1_000_000_000 / FPS; // 0.016 sec = 16,666,666.66 nano
         double nextDrawTime = System.nanoTime() + drawInterval; // the time when the next frame is printed
 
-        // Game Loop
+        // Java.Game Loop
         while(gameThread != null){
             long currentTime = System.nanoTime(); // 1 sec = 1,000,000,000 nano
             update();
@@ -67,27 +70,15 @@ public class GamePanel extends JPanel implements Runnable{
 
     // Updates positions
     public void update(){
-        // Checks if the key has been pressed and then changes position
-        if(keyHandler.upPressed){
-            playerY -= playerSpeed;
-        }
-        else if(keyHandler.downPressed){
-            playerY += playerSpeed;
-        }
-        else if (keyHandler.leftPressed){
-            playerX -= playerSpeed;
-        }
-        else if(keyHandler.rightPressed){
-            playerX += playerSpeed;
-        }
+        player.update();
     }
 
     // Updates positions to the screen
     public void paintComponent(Graphics g){
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g; // convert graphics -> graphics 2D
-        g2.setColor(Color.white);
-        g2.fillRect(playerX, playerY, tileSize, tileSize);
+
+        player.draw(g2);
 
         g2.dispose();
     }
